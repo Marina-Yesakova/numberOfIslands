@@ -1,0 +1,85 @@
+class Solution {
+    class Pair {
+        int ir;
+        int ic;
+        
+        Pair(int ir, int ic) {
+            this.ir = ir;
+            this.ic = ic;
+        }
+        
+        @Override
+        public int hashCode() {
+            int result = 17;
+            result = 31 * result + ir;
+            result = 31 * result + ic;
+            return result;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+
+            if (o == this) return true;
+            if (!(o instanceof Pair)) {
+                return false;
+            }
+
+            Pair pair = (Pair) o;
+
+            return pair.ir == this.ir &&
+                    pair.ic == this.ic;
+        }
+        
+    }
+    
+    public int numIslands(char[][] grid) {
+        int R = grid.length;
+        if(R == 0) {
+            return 0;
+        }
+        int C = grid[0].length;
+        Set<Pair> visited = new HashSet<>();
+        int count = 0;
+        for(int ir = 0; ir < R; ir++) {
+            for(int ic = 0; ic < C; ic++) {
+                //System.out.println(count);
+                boolean isIsland = isIsland(grid, ir, ic, visited, R, C);
+                if(isIsland) {
+                    count++;
+                    //System.out.println(count);
+                }
+            }
+        }
+        return count;
+    }
+    
+    public boolean isIsland(char[][] grid, int ir, int ic, Set<Pair> visited, int R, int C) {
+        Queue<Pair> queueOfIslands = new LinkedList<>();
+        boolean check = false;
+        queueOfIslands.add(new Pair(ir, ic));
+        //System.out.println(queueOfIslands.toString());
+        while(!queueOfIslands.isEmpty()){
+             Pair temp = queueOfIslands.poll();
+             if(grid[temp.ir][temp.ic] == '1') {
+                if(!visited.contains(temp)) {
+                    visited.add(temp);
+                    check = true;
+                    if(temp.ir-1 >= 0 && grid[temp.ir-1][temp.ic] == '1') {
+                        queueOfIslands.add(new Pair(temp.ir-1, temp.ic));
+                    }
+                    if(temp.ic-1 >= 0 && grid[temp.ir][temp.ic-1] == '1') {
+                        queueOfIslands.add(new Pair(temp.ir, temp.ic-1));
+                    }
+                    if(temp.ir+1 < R && grid[temp.ir+1][temp.ic] == '1') {
+                        queueOfIslands.add(new Pair(temp.ir+1, temp.ic));
+                    }
+                    if(temp.ic+1 < C && grid[temp.ir][temp.ic+1] == '1') {
+                        queueOfIslands.add(new Pair(temp.ir, temp.ic+1));
+                    }
+                }
+            }
+        }
+        
+        return check;
+    }
+}
